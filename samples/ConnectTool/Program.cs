@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace signalrtest
+namespace ConnectTool
 {
     class Program
     {
@@ -12,10 +12,18 @@ namespace signalrtest
             var conn = builder.Build();
             while (true)
             {
-                await conn.StartAsync();
-                await Task.Delay(500);
-                await conn.StopAsync();
-                await Task.Delay(500);
+                try
+                {
+                    await conn.StartAsync();
+                    Console.WriteLine("Connected!");
+                    await Task.Delay(500);
+                    await conn.StopAsync();
+                    await Task.Delay(500);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Connection failed: " + ex.Message);
+                }
             }
         }
     }

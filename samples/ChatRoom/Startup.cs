@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,8 @@ namespace Microsoft.Azure.SignalR.Samples.ChatRoom
 {
     class CustomRouter : IEndpointRouter
     {
+        int _index = 0;
+
         DefaultEndpointRouter _inner = new DefaultEndpointRouter();
 
         public IEnumerable<ServiceEndpoint> GetEndpointsForBroadcast(IEnumerable<ServiceEndpoint> availableEndpoints)
@@ -45,7 +48,9 @@ namespace Microsoft.Azure.SignalR.Samples.ChatRoom
 
         public ServiceEndpoint GetNegotiateEndpoint(IEnumerable<ServiceEndpoint> primaryEndpoints)
         {
-            var e = _inner.GetNegotiateEndpoint(primaryEndpoints);
+            var endpoints = primaryEndpoints.ToArray();
+            _index = (_index + 1) % endpoints.Length;
+            var e = endpoints[_index];
             Console.WriteLine($"Available endpoints: {String.Join(',', primaryEndpoints)}, return: {e}");
             return e;
         }
